@@ -1,0 +1,51 @@
+var notifDialogTimerHide;
+var notifDialogTimerTimeout;
+
+function notifDialogShow(msg,clsname,autohide,noreload){
+    var avail = $('#notifDialog').length;
+    if(clsname!=='error' && clsname!=='success'){
+        var clsname = 'info';
+    }else if(clsname==='error'){
+        clsname = 'danger';
+        var icon = 'fa-exclamation-circle';
+    }else if(clsname="success"){
+        var icon = 'fa-check-circle';
+    }
+
+    if(avail===0){
+        $('body').append('<div id="notifDialog" class="alert alert-'+clsname+'"></div>');
+        $('#notifDialog').append('<div><i class="fa fa-2x '+icon+'"></i>&nbsp;&nbsp;&nbsp;'+msg+'</div>').slideDown('fast');
+    }else{
+        clearTimeout(notifDialogTimerHide);
+        clearTimeout(notifDialogTimerTimeout);
+        if(noreload===true){
+            $('#notifDialog').attr('class','alert alert-'+clsname).html(msg);
+        }else{
+            $('#notifDialog').slideUp('fast',function(){
+                $(this).attr('class','alert alert-'+clsname).slideDown('fast').find('div').html(msg);
+            });
+        }
+    }
+    if(autohide!==false){
+       notifDialogTimerHide = setTimeout('notifDialogHide()',5000);
+    }else{
+       notifDialogTimerTimeout = setTimeout('notifDialogTimeout()',60000);
+    }
+}
+
+function notifDialogHide(){
+    clearTimeout(notifDialogTimerTimeout);
+    $('#notifDialog').slideUp('fast',function(){
+        $(this).remove();
+    });
+}
+
+function notifDialogTimeout(){
+    notifDialogShow('Request timeout! Please refresh the page and try again...','error',false);
+}
+
+$(document).ready(function(){
+    $(document).on('click','#notifDialog',function(){
+        notifDialogHide();
+    });
+});

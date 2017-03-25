@@ -1,0 +1,71 @@
+$(function(){
+    $('form.validationEngine').validationEngine('attach',{
+        autoHidePrompt : true,
+        autoHideDelay : 3000,
+        validationEventTrigger : 'submit',
+        promptPosition: 'topLeft'
+    });
+    
+    $('form.ajaxForm').submit(function(e){
+        e.preventDefault();
+        var $$ = $(this);
+        if($$.hasClass('validationEngine')){
+            if(!$$.validationEngine('validate')){
+                return false;
+            }
+        }
+        var btn = $$.find('button[type="submit"]');
+        var method = $$.attr('method');
+        var action = $$.attr('action');
+        var callback = $$.attr('data-callback');
+        buttonToggleLoading(btn,true);
+        $.ajax({
+            type: method.toLowerCase()=='post'?'POST':'GET',
+            url: action,
+            data: $$.serialize(),
+            async: true,
+            cache: false,
+            timeout: 20000,
+            success: function(j){
+                if(j){
+                    if(j.status===true){
+                        if(j.msg){
+                            notifDialogShow(j.msg,'success');
+                        }else{
+                            notifDialogHide();
+                        }
+                        if(j.redirect){
+                            document.location.href = j.redirect;
+                        }
+                        if(callback && callback.length>0){
+                            window[callback](j);
+                        }
+                    }else{
+                        notifDialogShow(j.msg,'error');
+                    }
+                }else{
+                    notifDialogShow('Unknown error occurred. Please try again!','error');
+                }
+            },
+            error: function(status){
+                notifDialogShow('Error: '+status.status+' '+status.statusText,'error');
+            },
+            complete: function(){
+                buttonToggleLoading(btn,false);
+            }
+        });
+    });
+});
+
+function buttonToggleLoading(elem,type){
+    if(type==true){
+        elem.addClass('disabled');
+        elem.attr('data-text',elem.text());
+        elem.css('width',elem.outerWidth()+'px').html('<i class="fa fa-repeat animate-rotate"></i>');
+    }else{
+        elem.removeClass('disabled');
+        elem.text(elem.attr('data-text')).removeAttr('data-text');
+        elem.css('width',false).find('i').remove();
+    }
+    elem.blur();
+}
