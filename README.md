@@ -12,6 +12,5 @@ Sample public host phishing site
                           URL : https://pranavann.000webhostapp.com/
 
 Further Details please refers
-                          URL : pranavann.blogspot.com
-
+                          URL :https://wordpress.com/post/pranavansite.wordpress.com/11
 
